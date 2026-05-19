@@ -20,7 +20,7 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     // Simple validation against hard‑coded admin credentials
-    if (username !== "admin" || password !== "123456") {
+    if (username !== "Admin" || password !== "123456") {
       toast.error("Credenciales inválidas");
       setIsLoading(false);
       return;
