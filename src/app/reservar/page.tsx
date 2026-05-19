@@ -102,7 +102,20 @@ export default function ReservarPage() {
   const prevStep = () => setStep((s) => s - 1);
 
   const onSubmit = async (data: FormValues) => {
+    // Validar que Firebase esté configurado
+    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY || !process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+      toast.error("Error de configuración del servidor. Contactanos por WhatsApp.");
+      return;
+    }
+
     setIsSubmitting(true);
+
+    // Timeout de seguridad: si en 15 segundos no hay respuesta, liberar el botón
+    const timeoutId = setTimeout(() => {
+      setIsSubmitting(false);
+      toast.error("La operación tardó demasiado. Verificá tu conexión e intentá nuevamente.");
+    }, 15000);
+
     try {
       const serviceName = services.find(s => s.id === selectedService)?.name || selectedService;
       await addDoc(collection(db, "turnos"), {
@@ -116,11 +129,20 @@ export default function ReservarPage() {
         status: "Pendiente",
         createdAt: serverTimestamp()
       });
-      toast.success("Turno confirmado con éxito");
+      clearTimeout(timeoutId);
+      toast.success("¡Turno confirmado con éxito!");
       setStep(4);
-    } catch (error) {
+    } catch (error: unknown) {
+      clearTimeout(timeoutId);
       console.error("Error al guardar turno:", error);
-      toast.error("Ocurrió un error al confirmar. Intenta nuevamente.");
+      const firebaseError = error as { code?: string };
+      if (firebaseError?.code === "permission-denied") {
+        toast.error("Sin permisos para guardar. Contactanos por WhatsApp.");
+      } else if (firebaseError?.code === "unavailable") {
+        toast.error("Sin conexión a internet. Verificá tu red e intentá nuevamente.");
+      } else {
+        toast.error("Ocurrió un error al confirmar. Intenta nuevamente.");
+      }
     } finally {
       setIsSubmitting(false);
     }
