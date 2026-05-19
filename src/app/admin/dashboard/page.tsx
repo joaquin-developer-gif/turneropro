@@ -37,7 +37,7 @@ export default function Dashboard() {
       const turnosData: Turno[] = [];
       let pending = 0;
       snapshot.forEach((doc) => {
-        const data = doc.data() as Turno;
+        const { id: _id, ...data } = doc.data() as Turno;
         turnosData.push({ id: doc.id, ...data });
         if (data.status === "Pendiente") pending++;
       });
