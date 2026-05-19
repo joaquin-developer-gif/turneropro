@@ -1,26 +1,75 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #050505; /* Negro puro/profundo */
+  --foreground: #fbcfe8; /* Rosa pastel (pink-200) para el texto general */
+  --neon-pink: #ff1493; /* Rosa neón */
+  --neon-light: #ff69b4; /* HotPink */
+  
+  --card-bg: rgba(20, 5, 15, 0.8);
+  --card-border: rgba(255, 20, 147, 0.4);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-neon-pink: var(--neon-pink);
+  --color-neon-light: var(--neon-light);
+  
+  --color-card: var(--card-bg);
+  --color-card-border: var(--card-border);
+  
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@utility glass {
+  background-color: var(--card-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+@utility neon-text {
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--neon-pink), 0 0 30px var(--neon-pink), 0 0 40px var(--neon-pink);
+  color: #fff;
+}
+
+@utility neon-box {
+  box-shadow: 0 0 15px rgba(255, 20, 147, 0.3), inset 0 0 10px rgba(255, 20, 147, 0.1);
+  border: 1px solid rgba(255, 20, 147, 0.4);
+}
+
+@utility neon-box-hover {
+  &:hover {
+    box-shadow: 0 0 25px rgba(255, 20, 147, 0.6), inset 0 0 15px rgba(255, 20, 147, 0.2);
+    border: 1px solid rgba(255, 20, 147, 0.8);
+  }
+}
+
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@utility animate-blob {
+  animation: blob 10s infinite alternate ease-in-out;
+}
+
+@utility animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+@utility animation-delay-4000 {
+  animation-delay: 4s;
 }
